@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Local secrets and settings
+.env
+accesspilot.toml
+
+# Scan output: reports and evidence logs are about real sites, keep them out of git
+accesspilot-reports/
+runs/
+store/
+*.csv
+
+# Editors
+.vscode/
+.idea/
+.DS_Store
+
+# Demo sample reports are built when the demo image is built
+web/samples/

@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AccessPilot · Accessibility scans for online shops</title>
+<meta name="description" content="Scan an online shop for the accessibility defects the European Accessibility Act puts at risk, and get a fix plan ordered the way a theme is fixed. Open source.">
+<meta property="og:title" content="AccessPilot · Accessibility scans for online shops">
+<meta property="og:description" content="Real-browser accessibility scans, a fix plan per page template, a draft accessibility statement and a tamper-evident history. Try it live.">
+<meta property="og:image" content="/og.png">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/app.css">
+<script src="/app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="#/" aria-label="AccessPilot home">
+      <svg class="brand-mark" viewBox="0 0 32 32" width="28" height="28" aria-hidden="true" focusable="false">
+        <rect width="32" height="32" rx="8" fill="currentColor"/>
+        <circle cx="16" cy="9" r="2.6" fill="#fff"/>
+        <path d="M8.5 13.5 16 15l7.5-1.5M16 15v4.5m0 0-3.6 6.5M16 19.5l3.6 6.5" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>AccessPilot</span>
+    </a>
+    <nav aria-label="Main">
+      <ul>
+        <li><a href="#try">Try it</a></li>
+        <li><a href="#samples">Sample reports</a></li>
+        <li><a href="#how">How it works</a></li>
+        <li><a class="gh" href="https://github.com/Walid-Birouk/AccessPilot">GitHub</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main" tabindex="-1">
+<div id="landing">
+  <section class="hero" id="try" aria-labelledby="hero-title">
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="dot" aria-hidden="true"></span>European Accessibility Act · in force since 28 June 2025</p>
+        <h1 id="hero-title">Find what makes an online shop unusable for disabled customers, and fix it in the right order.</h1>
+        <p class="lede">AccessPilot tests a shop's key pages in a real browser, merges the defects the way a theme is actually fixed, and puts the checkout first. You get a prioritised fix plan, a draft accessibility statement and proof of progress over time.</p>
+
+        <form id="scan-form" class="scan-form" novalidate>
+          <label for="scan-url" class="scan-label">Scan a shop's website</label>
+          <div class="scan-row">
+            <input id="scan-url" name="url" type="text" inputmode="url" autocomplete="url" spellcheck="false"
+                   placeholder="www.your-shop.fr" aria-describedby="scan-help scan-error">
+            <button type="submit" class="btn btn-primary" id="scan-submit">Scan</button>
+          </div>
+          <p id="scan-error" class="form-error" role="alert" hidden></p>
+          <p id="scan-help" class="hint">Live scans test up to <span data-limit="max_pages">8</span> pages in about a minute, honour robots.txt, and never click, type or buy anything.</p>
+          <p class="or"><span>or</span></p>
+          <button type="button" class="btn btn-ghost" id="scan-demo">Scan our demo shop <span class="muted-in-btn">no address needed</span></button>
+        </form>
+      </div>
+
+      <aside class="hero-preview" aria-labelledby="preview-title">
+        <div class="preview-card" id="preview">
+          <div class="preview-top">
+            <span class="win" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="preview-url">rapport.html</span>
+          </div>
+          <div class="preview-body">
+            <h2 id="preview-title" class="preview-title">Sample report</h2>
+            <p class="muted small" id="preview-site">Loading…</p>
+            <div class="kpis kpis-sm" id="preview-kpis"></div>
+            <p class="preview-sub">Top of the fix plan</p>
+            <ol class="mini-fixes" id="preview-fixes"></ol>
+            <a class="link-arrow" href="#/report/sample/before">Open this report</a>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="band" aria-label="At a glance">
+    <ul class="band-inner">
+      <li><strong>Real browser</strong><span>Chromium + axe-core 4.14, on pages as customers see them</span></li>
+      <li><strong>Per template</strong><span>one fix per theme template, not hundreds of per-page errors</span></li>
+      <li><strong>Purchase path first</strong><span>checkout and cart before the home page</span></li>
+      <li><strong>Never claims compliance</strong><span>a guard rejects any text that does</span></li>
+    </ul>
+  </section>
+
+  <section class="section" id="samples" aria-labelledby="samples-title">
+    <div class="section-inner">
+      <p class="kicker">Sample reports</p>
+      <h2 id="samples-title">One shop, scanned before and after its first fixes</h2>
+      <p class="section-lede">Maison Céleste is a fictional fashion shop built for this demo, with the defects real shop themes commonly ship with. Both reports below come from real scans run when this site was deployed. You can also <a href="/shop/before/">browse the shop itself</a>.</p>
+      <div class="sample-grid" id="sample-grid" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section class="section alt" id="how" aria-labelledby="how-title">
+    <div class="section-inner">
+      <p class="kicker">How it works</p>
+      <h2 id="how-title">From an address to a plan a developer can act on</h2>
+      <ol class="steps">
+        <li>
+          <span class="step-n" aria-hidden="true">1</span>
+          <h3>Crawl by template</h3>
+          <p>Classifies pages as home, category, product, cart, checkout… and samples a few of each, so twenty pages cover the whole theme. Read-only: GET requests only, robots.txt honoured, rate-limited, with a circuit breaker.</p>
+        </li>
+        <li>
+          <span class="step-n" aria-hidden="true">2</span>
+          <h3>Test in a real browser</h3>
+          <p>Runs axe-core against WCAG 2.1 AA in headless Chromium after client-side rendering settles, even on sites with a strict Content-Security-Policy. Pages that fail to load are reported as untested, never as clean.</p>
+        </li>
+        <li>
+          <span class="step-n" aria-hidden="true">3</span>
+          <h3>Merge into fixes</h3>
+          <p>Findings of the same rule on the same template become one fix. Elements shared by every page, like the header or menu, become one layout fix. The list is ordered by impact, then by place in the purchase path.</p>
+        </li>
+        <li>
+          <span class="step-n" aria-hidden="true">4</span>
+          <h3>Prove progress</h3>
+          <p>Each scan is compared with the previous one (fixed, new, still present) and recorded in a hash-chained log with the SHA-256 of the scan file, so the work can be shown to a regulator or a client.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="out-title">
+    <div class="section-inner">
+      <p class="kicker">What you get</p>
+      <h2 id="out-title">Four outputs from one command</h2>
+      <div class="features">
+        <article class="feature">
+          <h3>A prioritised fix plan</h3>
+          <p>In French, for the French market, with the RGAA criterion, the WCAG reference, the failing HTML and concrete instructions for each fix.</p>
+        </article>
+        <article class="feature">
+          <h3>A draft accessibility statement</h3>
+          <p>The <i lang="fr">déclaration d'accessibilité</i> in the RGAA model format, declared “non conforme” until a human audit says otherwise.</p>
+        </article>
+        <article class="feature">
+          <h3>A diff and a CI gate</h3>
+          <p><code>--fail-on serious</code> or <code>--fail-on-new</code> makes a theme deploy fail when it adds accessibility regressions.</p>
+        </article>
+        <article class="feature">
+          <h3>A tamper-evident history</h3>
+          <p>An append-only, hash-chained evidence log. <code>accesspilot verify</code> checks the chain and every scan file it references.</p>
+        </article>
+      </div>
+      <figure class="terminal" aria-label="Example command line session">
+        <pre><code><span class="t-dim">$</span> accesspilot scan https://www.example-shop.fr --fail-on-new
+Scanning https://www.example-shop.fr (up to 20 pages, 3 per template)...
+  home          12 defects  https://www.example-shop.fr/
+  product       31 defects  https://www.example-shop.fr/products/robe-lin
+  checkout       9 defects  https://www.example-shop.fr/checkout
+<span class="t-strong">example-shop.fr: 104 defects on 11 pages, 14 fixes.</span>
+<span class="t-ok">Since the previous scan: 9 fixed, 0 new.</span></code></pre>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section alt" aria-labelledby="honest-title">
+    <div class="section-inner two-col">
+      <div>
+        <p class="kicker">What it is not</p>
+        <h2 id="honest-title">Honest by design</h2>
+        <p>Automated testing finds only part of accessibility defects. AccessPilot never says a site is compliant: every report says so on its first line and lists what automation cannot test, and the statement stays “non conforme” until an auditor says otherwise. An optional LLM can rewrite fix instructions, but its output must pass the same claim guard and may only cite that fix's own evidence.</p>
+      </div>
+      <div>
+        <p class="kicker">Engineering</p>
+        <h2>Built to be trusted</h2>
+        <ul class="ticks">
+          <li>Python 3.11+, Playwright, axe-core vendored with French messages, no CDN at scan time</li>
+          <li>Deterministic: every report, plan and statement is derived from one immutable <code>scan.json</code></li>
+          <li>Tests against a local fixture shop with a strict CSP, broken pages and links it must never follow</li>
+          <li>This demo: a standard-library server with per-visitor quotas, a scan queue and SSRF protection on every browser request</li>
+          <li>The page you are reading is itself checked with axe-core in the test suite</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div id="view" hidden></div>
+</main>
+
+<footer class="foot">
+  <div class="foot-inner">
+    <p>AccessPilot <span data-version></span> · open source under the MIT license · by Walid Birouk</p>
+    <p><a href="https://github.com/Walid-Birouk/AccessPilot">Source code on GitHub</a> · <a href="/shop/before/">Demo shop</a></p>
+  </div>
+</footer>
+<div id="announcer" class="visually-hidden" role="status" aria-live="polite"></div>
+</body>
+</html>

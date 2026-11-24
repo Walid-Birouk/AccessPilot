@@ -1,0 +1,63 @@
+[build-system]
+requires = ["hatchling>=1.24"]
+build-backend = "hatchling.build"
+
+[project]
+name = "accesspilot"
+dynamic = ["version"]
+description = "Automated accessibility scans for online shops (EAA / RGAA / WCAG 2.1 AA): fix plan per page template, draft accessibility statement, tamper-evident scan history."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE", "accesspilot/scan/vendor/AXE-LICENSE.txt"]
+requires-python = ">=3.11"
+authors = [{ name = "Walid Birouk" }]
+keywords = ["accessibility", "a11y", "wcag", "rgaa", "eaa", "axe-core", "e-commerce", "audit"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Natural Language :: French",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Internet :: WWW/HTTP :: Site Management",
+]
+dependencies = [
+    "playwright>=1.45",
+    "httpx>=0.27",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.6"]
+
+[project.scripts]
+accesspilot = "accesspilot.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/Walid-Birouk/AccessPilot"
+Issues = "https://github.com/Walid-Birouk/AccessPilot/issues"
+
+[tool.hatch.version]
+path = "accesspilot/__init__.py"
+
+[tool.hatch.build.targets.sdist]
+include = ["accesspilot", "tests", "README.md", "LICENSE"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["browser: needs a Chromium binary (skipped when none is available)"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py311"
+extend-exclude = ["accesspilot/scan/vendor"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+
+[tool.ruff.lint.per-file-ignores]
+"accesspilot/report.py" = ["E501"]
+"web/shop.py" = ["E501"]   # page markup and CSS

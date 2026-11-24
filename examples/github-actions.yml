@@ -1,0 +1,40 @@
+# Copy to .github/workflows/accessibility.yml in your shop's repository (or any repo).
+# Scans the site every Monday and on demand, fails when new defects appear since
+# the previous scan, and keeps reports + the evidence log as a build artifact.
+name: Accessibility scan
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install "accesspilot @ git+https://github.com/Walid-Birouk/AccessPilot"
+      - run: python -m playwright install --with-deps chromium
+
+      # Restore the previous reports so the scan can compare and extend the evidence log.
+      - uses: actions/cache/restore@v4
+        with:
+          path: accesspilot-reports
+          key: accesspilot-${{ github.run_id }}
+          restore-keys: accesspilot-
+
+      - name: Scan
+        run: accesspilot scan https://www.example-shop.fr --page /panier --fail-on-new
+
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: accesspilot-reports
+          key: accesspilot-${{ github.run_id }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: accessibility-report
+          path: accesspilot-reports

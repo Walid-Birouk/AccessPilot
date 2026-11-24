@@ -1,0 +1,12 @@
+.git
+.github
+**/__pycache__
+.pytest_cache
+.ruff_cache
+*.egg-info
+accesspilot-reports
+runs
+store
+tests
+web/samples
+.env

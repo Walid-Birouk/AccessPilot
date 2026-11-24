@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="accesspilot-token" content="__TOKEN__">
+<title>AccessPilot</title>
+<link rel="stylesheet" href="/app.css">
+<link rel="icon" href="data:,">
+<script src="/app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <div class="top-inner">
+    <a class="brand" href="#/">AccessPilot</a>
+    <nav aria-label="Main">
+      <ul>
+        <li><a href="#/" data-nav="scans">Scans</a></li>
+        <li><a href="#/exemption" data-nav="exemption">Exemption check</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<main id="main" tabindex="-1">
+  <noscript><p>This interface needs JavaScript. The command line (<code>accesspilot scan</code>) works without it.</p></noscript>
+  <p class="muted" id="loading">Loading…</p>
+</main>
+<div id="announcer" class="visually-hidden" role="status" aria-live="polite"></div>
+</body>
+</html>

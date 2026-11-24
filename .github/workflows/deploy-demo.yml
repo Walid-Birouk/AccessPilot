@@ -1,0 +1,62 @@
+# Publishes the public demo (web/ + Dockerfile) to a Hugging Face Space, which builds and runs it.
+# One-time setup, see web/README.md:
+#   - repository secret HF_TOKEN: a Hugging Face access token with write access
+#   - repository variable HF_SPACE: the Space id, for example "your-name/accesspilot"
+# Without them, this workflow does nothing.
+name: Deploy demo
+
+on:
+  push:
+    branches: [main]
+    paths: ["accesspilot/**", "web/**", "Dockerfile", "pyproject.toml", ".github/workflows/deploy-demo.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-demo
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ vars.HF_SPACE != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Push to the Hugging Face Space
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_SPACE: ${{ vars.HF_SPACE }}
+        run: |
+          set -euo pipefail
+          if [ -z "${HF_TOKEN}" ]; then echo "HF_TOKEN secret is not set"; exit 1; fi
+          git clone --depth 1 "https://user:${HF_TOKEN}@huggingface.co/spaces/${HF_SPACE}" space
+          find space -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          cp -r accesspilot web Dockerfile .dockerignore pyproject.toml LICENSE space/
+          # The Space's README carries its settings; the package build also needs a README.md.
+          {
+            echo "---"
+            echo "title: AccessPilot"
+            echo "emoji: ♿"
+            echo "colorFrom: indigo"
+            echo "colorTo: blue"
+            echo "sdk: docker"
+            echo "app_port: 7860"
+            echo "pinned: true"
+            echo "license: mit"
+            echo "short_description: Accessibility scans for online shops (EAA, RGAA, WCAG)"
+            echo "---"
+            echo
+            cat README.md
+          } > space/README.md
+          cd space
+          # The Hub refuses plain binary files: images go through Git LFS.
+          git lfs install --local
+          git lfs track "*.png"
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then echo "Space already up to date"; exit 0; fi
+          git commit -m "Deploy ${GITHUB_SHA::7} from GitHub"
+          git push
